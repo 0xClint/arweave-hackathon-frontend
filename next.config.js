@@ -1,4 +1,15 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+    reactStrictMode: true,
+    swcMinify: true,
+    // webpack(webpackConfig) {
+    //     return {
+    //         ...webpackConfig,
+    //         optimization: {
+    //             minimize: false,
+    //         },
+    //     };
+    // },
+};
 
-module.exports = nextConfig
+export default nextConfig;
