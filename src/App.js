@@ -24,11 +24,13 @@ function App() {
     setWallet(wallet);
     await wallet.setUrl("arweave.app");
     await wallet.connect();
+    console.log(process.env.REACT_APP_TX_ID);
     setAddress(await wallet.address);
     setConnected(true);
   };
 
-  const subscribe = async () => {
+  const subscribe = async (e) => {
+    e.preventDefault();
     if (name && email && address) {
       setLoader(true);
       const userSigner = await new InjectedArweaveSigner(wallet);
@@ -36,16 +38,16 @@ function App() {
 
       const warp = WarpFactory.forTestnet();
       const contract = await warp
-        .contract("SVOhbM5bumtUrIz09Rc54qdwOY3NtS0lvti-xfdz7gA")
+        .contract("gWNXcy0ZbI8xDphrsS7B3H7Pb9qKlwnFoXxrgJenjEM")
         .connect(userSigner);
       try {
         const result = await contract.writeInteraction({
           function: "addUser",
           user: {
             address,
-            email: "omkarbdarde@gmail.com",
+            email,
             status: "active",
-            name: "ClintOP2",
+            name,
           },
         });
         console.log("result:", result);
@@ -182,7 +184,7 @@ function App() {
               <button className="main_connect" onClick={() => connectWallet()}>
                 {isConnected ? "connected" : "connect wallet"}
               </button>
-              <button className="main_btn" onClick={() => subscribe()}>
+              <button className="main_btn" onClick={(e) => subscribe(e)}>
                 <a>Subscribe</a>
               </button>
             </form>
