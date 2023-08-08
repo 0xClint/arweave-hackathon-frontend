@@ -1,23 +1,14 @@
-"use client";
+import "./App.css";
+import { useState } from "react";
 import { ArweaveWebWallet } from "arweave-wallet-connector";
 import { WarpFactory } from "warp-contracts";
-import { transactionId } from "../../transactionid";
 import { InjectedArweaveSigner } from "warp-contracts-plugin-deploy";
-import { useState } from "react";
 
-
-
-export default function Home() {
-
+function App() {
   const [wallet, setWallet] = useState("");
-
-  // const { connect } = useConnection();
-  // const address = useActiveAddress();
-  // const publicKey = usePublicKey()
-
+  const [address, setAddress] = useState("");
 
   const connectWallet = async () => {
-
     let wallet = new ArweaveWebWallet({
       // optionally provide information about your app that will be displayed in the wallet provider interface
       name: "temp-app",
@@ -26,22 +17,25 @@ export default function Home() {
     setWallet(wallet);
     await wallet.setUrl("arweave.app");
     await wallet.connect();
+    setAddress(await wallet.address);
   };
 
-  const interact = async () => {
-
-    const userSigner = await new InjectedArweaveSigner(wallet)
+  const subscribe = async () => {
+    const userSigner = await new InjectedArweaveSigner(wallet);
     await userSigner.setPublicKey();
 
     const warp = WarpFactory.forTestnet();
-    const contract = await warp.contract(transactionId).connect(userSigner);
+    const contract = await warp
+      .contract("SVOhbM5bumtUrIz09Rc54qdwOY3NtS0lvti-xfdz7gA")
+      .connect(userSigner);
     try {
       const result = await contract.writeInteraction({
         function: "addUser",
         user: {
-          address: "address3",
-          email: "bcd@mnp.xyz",
+          address,
+          email: "omkarbdarde@gmail.com",
           status: "active",
+          name: "ClintOP2",
         },
       });
       console.log("result:", result);
@@ -50,9 +44,11 @@ export default function Home() {
     }
   };
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <button onClick={() => connectWallet()}>Connect</button>
-      <button onClick={() => interact()}>Interact</button>
-    </main>
-  )
+    <div className="App">
+      <button onClick={() => connectWallet()}>connect</button>
+      <button onClick={() => subscribe()}>subscribe</button>
+    </div>
+  );
 }
+
+export default App;
